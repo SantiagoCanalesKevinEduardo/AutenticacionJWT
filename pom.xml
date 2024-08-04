@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.pe.curso.spring</groupId>
-	<artifactId>CursoSping</artifactId>
+	<artifactId>CursoSpring</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>CursoSping</name>
 	<description>Demo para aprender curso de Spring</description>
