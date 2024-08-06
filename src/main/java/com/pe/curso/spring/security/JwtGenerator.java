@@ -6,11 +6,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.util.Base64;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -42,7 +40,6 @@ public class JwtGenerator {
         String base64Key = ConstantSecurity.JWT_SIGNATURE_KEY.replace('_', '/').replace('-', '+');
 
         byte[] keyBytes = Decoders.BASE64.decode(base64Key);
-        logger.info("Key: " +keyBytes.length);
         if (keyBytes.length < 32) { // 32 bytes * 8 = 256 bits
             throw new IllegalArgumentException("The key must be at least 256 bits.");
         }

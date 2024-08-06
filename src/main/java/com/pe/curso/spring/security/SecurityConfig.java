@@ -1,9 +1,11 @@
 package com.pe.curso.spring.security;
 
 
+import com.pe.curso.spring.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity //habilita la seguridad web y proporciona la integración de Spring Security con Spring MVC
 public class SecurityConfig {
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     //esta sirve para pruebas unitarias
     @Autowired
@@ -40,7 +44,7 @@ public class SecurityConfig {
     //Este bean incorpara el filtro de seguridad de json web token que creamos
     @Bean
     JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(new CustomUserDetailService(null), new JwtGenerator());
+        return new JwtAuthenticationFilter(new CustomUserDetailService(usuarioRepository), new JwtGenerator());
     }
 
     //Este bean incorpara el filtro de seguridad de json web token que creamos
@@ -52,6 +56,11 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/person/create").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/api/person/update").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/api/person/delete").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/api/person/find").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/api/person/list").hasAnyAuthority("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(basic -> basic.disable());

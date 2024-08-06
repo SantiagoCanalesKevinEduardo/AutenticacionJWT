@@ -22,6 +22,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
     private UsuarioRepository usuarioRepository;
 
+
     //Inyectamos el repositorio de usuarios
     @Autowired
     public CustomUserDetailService(UsuarioRepository usuarioRepository) {
@@ -36,7 +37,7 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
-        return new User(usuario.getUsername(),usuario.getPassword(), mapToAuthorities(usuario.getRoles()));
+        return new User(usuario.getUsername(), usuario.getPassword(), mapToAuthorities(usuario.getRoles()));
     }
 
 }

@@ -7,9 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-
     //Sirve para buscar un usuario por su nombre de usuario
     //Optional es un contenedor que puede o no contener un valor no nulo
     Optional<Usuario> findByUsername(String username);
