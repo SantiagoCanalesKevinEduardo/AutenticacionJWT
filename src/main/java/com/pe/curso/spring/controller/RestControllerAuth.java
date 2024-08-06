@@ -15,10 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 
@@ -41,7 +38,7 @@ public class RestControllerAuth {
     }
 
     //Aqui se crearan los metodos para registrar y loguear usuarios
-    @PostMapping("register")
+    @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody DtoRegister register){
         if(usuarioRepository.existsByUsername(register.getUsername())){
             return ResponseEntity.badRequest().body("El nombre de usuario ya existe");
@@ -57,7 +54,7 @@ public class RestControllerAuth {
     }
 
     //Metodo para registrar un administrador
-    @PostMapping("registerAdmin")
+    @PostMapping("/registerAdmin")
     public ResponseEntity<String> registerAdmin(@RequestBody DtoRegister register){
         if(usuarioRepository.existsByUsername(register.getUsername())){
             return ResponseEntity.badRequest().body("El nombre de administrador ya existe");
@@ -73,7 +70,7 @@ public class RestControllerAuth {
     }
 
     //Metodo para loguear un usuario
-    @PostMapping("login")
+    @GetMapping("/login")
     public ResponseEntity<DtoAuthResponse> login(@RequestBody DtoLogin login){
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(login.getUsername(),login.getPassword()

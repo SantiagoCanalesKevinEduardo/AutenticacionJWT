@@ -19,35 +19,51 @@ import java.util.stream.Collectors;
 //Y si es correcto permitir el acceso a la aplicación
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private CustomUserDetailService customUserDetailService;
-    private JwtGenerator jwtGenerator;
+    private final CustomUserDetailService customUserDetailService;
+    private final JwtGenerator jwtGenerator;
+
+    public JwtAuthenticationFilter(CustomUserDetailService customUserDetailService, JwtGenerator jwtGenerator) {
+        this.customUserDetailService = customUserDetailService;
+        this.jwtGenerator = jwtGenerator;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String token = getJwtFromRequest(request);
-        logger.info("Token: "+token);
-        UserDetails userDetails = customUserDetailService.loadUserByUsername(jwtGenerator.getUsernameFromToken(token));
-        if(StringUtils.hasText(token) && jwtGenerator.validateToken(token,userDetails)){
-            List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-            if(roles.contains("USER") || roles.contains("ADMIN")){
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                filterChain.doFilter(request,response);
+        try {
+            String token = getJwtFromRequest(request);
+            logger.info("Token: " + token);
+            if (StringUtils.hasText(token) && jwtGenerator.validateToken(token)) {
+                String username = jwtGenerator.getUsernameFromToken(token);
+                UserDetails userDetails = customUserDetailService.loadUserByUsername(username);
+                if (userDetails != null) {
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
-
+            filterChain.doFilter(request, response);
+        } catch (IllegalArgumentException ex) {
+            logger.error("JWT token validation error: " + ex.getMessage());
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT token format.");
         }
-        filterChain.doFilter(request,response);
     }
 
-    private String getJwtFromRequest(HttpServletRequest request){
+    private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        logger.info("Bearer Token: "+bearerToken);
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
-            return bearerToken.substring(7);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            String token = bearerToken.substring(7);
+            if (token.chars().filter(ch -> ch == '.').count() == 2) {
+                return token;
+            } else {
+                logger.error("Invalid JWT token format: " + token);
+                throw new IllegalArgumentException("Invalid JWT token format.");
+            }
         }
         return null;
     }
+
+
+
 }
