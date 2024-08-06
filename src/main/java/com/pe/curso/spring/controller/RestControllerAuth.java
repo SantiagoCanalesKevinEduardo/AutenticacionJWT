@@ -59,6 +59,7 @@ public class RestControllerAuth {
         if(usuarioRepository.existsByUsername(register.getUsername())){
             return ResponseEntity.badRequest().body("El nombre de administrador ya existe");
         }
+
         Usuario usuario = new Usuario();
         usuario.setUsername(register.getUsername());
         usuario.setPassword(passwordEncoder.encode(register.getPassword()));
