@@ -2,7 +2,6 @@ package com.pe.curso.spring.security;
 
 
 import com.pe.curso.spring.repositories.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,16 +18,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration //le indica a Spring que esta clase es de seguridad al momento de arrancar la aplicación
 @EnableWebSecurity //habilita la seguridad web y proporciona la integración de Spring Security con Spring MVC
 public class SecurityConfig {
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final UsuarioRepository usuarioRepository;
 
     //esta sirve para pruebas unitarias
-    @Autowired
-    public SecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+    public SecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, UsuarioRepository usuarioRepository) {
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.usuarioRepository = usuarioRepository;
     }
-
     //este bena va a encargar de verificar la información de los usuarios
     @Bean
     AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {

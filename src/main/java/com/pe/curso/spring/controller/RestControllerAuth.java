@@ -8,7 +8,6 @@ import com.pe.curso.spring.models.Usuario;
 import com.pe.curso.spring.repositories.RolRepository;
 import com.pe.curso.spring.repositories.UsuarioRepository;
 import com.pe.curso.spring.security.JwtGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,13 +21,13 @@ import java.util.Collections;
 @RestController
 @RequestMapping("/api/auth")
 public class RestControllerAuth {
-    private AuthenticationManager authenticationManager;
-    private PasswordEncoder passwordEncoder;
-    private RolRepository rolRepository;
-    private UsuarioRepository usuarioRepository;
-    private JwtGenerator jwtGenerator;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
+    private final RolRepository rolRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final JwtGenerator jwtGenerator;
 
-    @Autowired
+    
     public RestControllerAuth(AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, RolRepository rolRepository, UsuarioRepository usuarioRepository, JwtGenerator jwtGenerator) {
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;

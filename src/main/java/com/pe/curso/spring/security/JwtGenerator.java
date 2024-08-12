@@ -1,10 +1,11 @@
 package com.pe.curso.spring.security;
 
-import ch.qos.logback.classic.Logger;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -13,8 +14,8 @@ import java.util.Date;
 import java.util.function.Function;
 
 @Component
+@Slf4j
 public class JwtGenerator {
-    private Logger logger = (Logger) org.slf4j.LoggerFactory.getLogger(JwtGenerator.class);
 
     //Metodo para generar el token por medio de la autenticación
     public String generateToken(Authentication authentication){
@@ -47,8 +48,7 @@ public class JwtGenerator {
     }
 
     private Claims getAllClaims(String token){
-        logger.info("Claims: ",Jwts.parser().verifyWith(getSecretKey()).build().parseClaimsJws(token).getPayload());
-        return Jwts.parser().verifyWith(getSecretKey()).build().parseClaimsJws(token).getPayload();
+        return Jwts.parser().verifyWith(getSecretKey()).build(). parseSignedClaims(token).getPayload();
     }
 
     public <T> T getClaims(String token, Function<Claims,T> claimsResolver){

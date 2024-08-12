@@ -1,11 +1,9 @@
 package com.pe.curso.spring.security;
 
-import com.pe.curso.spring.repositories.UsuarioRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,9 +16,7 @@ import java.io.IOException;
 //La funcion de esta clase será validar el token que se envía en la cabecera de la petición
 //Y si es correcto permitir el acceso a la aplicación
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    @Autowired
     private final CustomUserDetailService customUserDetailService;
-    @Autowired
     private final JwtGenerator jwtGenerator;
 
     public JwtAuthenticationFilter(CustomUserDetailService customUserDetailService, JwtGenerator jwtGenerator) {
@@ -29,6 +25,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
 
+    @SuppressWarnings("null")
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,

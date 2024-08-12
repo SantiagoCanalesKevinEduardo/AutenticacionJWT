@@ -4,7 +4,6 @@ package com.pe.curso.spring.security;
 import com.pe.curso.spring.models.Rol;
 import com.pe.curso.spring.models.Usuario;
 import com.pe.curso.spring.repositories.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -20,11 +19,10 @@ import java.util.stream.Collectors;
 @Service
 public class CustomUserDetailService implements UserDetailsService {
 
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
 
     //Inyectamos el repositorio de usuarios
-    @Autowired
     public CustomUserDetailService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
