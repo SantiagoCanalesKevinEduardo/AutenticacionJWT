@@ -16,12 +16,11 @@ import java.util.function.Function;
 @Component
 @Slf4j
 public class JwtGenerator {
-
     //Metodo para generar el token por medio de la autenticación
     public String generateToken(Authentication authentication){
         String username = authentication.getName();
         Date currentTime = new Date();
-        Date expirationToken = new Date(currentTime.getTime() + ConstantSecurity.JWT_EXPIRATION_TOKEN);
+        Date expirationToken = new Date(currentTime.getTime() + ConstantSecurity.getJWT_EXPIRATION_TOKEN());
         //Linea para generar el token
         return Jwts.builder()
                 .subject(username)
@@ -33,12 +32,12 @@ public class JwtGenerator {
 
     //Metodo para obtener el nombre de usuario del token
     public String getUsernameFromToken(String token){
-        System.out.println("Token: "+token);
+        log.info("token: {}",token);
         return getClaims(token, Claims::getSubject);
     }
 
     private SecretKey getSecretKey() {
-        String base64Key = ConstantSecurity.JWT_SIGNATURE_KEY.replace('_', '/').replace('-', '+');
+        String base64Key = ConstantSecurity.getJWT_SIGNATURE_KEY().replace('_', '/').replace('-', '+');
 
         byte[] keyBytes = Decoders.BASE64.decode(base64Key);
         if (keyBytes.length < 32) { // 32 bytes * 8 = 256 bits
